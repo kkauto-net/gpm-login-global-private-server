@@ -8,10 +8,7 @@ use App\Models\User;
 
 class SettingService
 {
-    // Match:
-    // - resources\views\index.blade.php
-    // - resources\views\ready.blade.php
-    public static $server_version = 19;
+    public static $server_version = 20;
 
     public function initializeDefaultSettings()
     {
