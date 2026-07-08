@@ -114,14 +114,21 @@ class S3PresignedUrlService
             }
 
             // Create S3 client
-            $s3Client = new S3Client([
+            $s3ClientConfig = [
                 'version' => 'latest',
                 'region' => $s3Data['s3_api_region'],
                 'credentials' => [
                     'key' => $s3Data['s3_api_key'],
                     'secret' => $s3Data['s3_api_secret'],
                 ],
-            ]);
+            ];
+
+            // Optional custom endpoint override (backward compatible: disabled by default).
+            if (($s3Data['s3_api_endpoint_enabled'] ?? 'off') === 'on' && trim($s3Data['s3_api_endpoint'] ?? '') !== '') {
+                $s3ClientConfig['endpoint'] = trim($s3Data['s3_api_endpoint']);
+            }
+
+            $s3Client = new S3Client($s3ClientConfig);
 
             // Get presigned URL duration from environment (default 120 minutes)
             $durationMinutes = env('S3_PRESIGNED_URL_DURATION_MINUTES', 120);

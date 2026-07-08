@@ -17,41 +17,70 @@
                 <el-collapse-transition>
                     <div v-if="form.storage_type === 's3'">
                         <el-row :gutter="16">
-                            <el-col :md="12" :sm="24">
+                            <el-col :md="8" :sm="24">
                                 <el-form-item :label="t('settings.s3Key')">
                                     <el-input v-model="form.s3.S3_KEY" />
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="12" :sm="24">
+                            <el-col :md="8" :sm="24">
                                 <el-form-item :label="t('settings.s3Password')">
                                     <el-input v-model="form.s3.S3_PASSWORD" show-password />
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="12" :sm="24">
+                            <el-col :md="8" :sm="24">
                                 <el-form-item :label="t('settings.s3Bucket')">
                                     <el-input v-model="form.s3.S3_BUCKET" />
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="12" :sm="24">
-                                <el-form-item :label="t('settings.s3Region')">
-                                    <div style="display: flex; gap: 8px; align-items: center; width: 100%">
-                                        <el-checkbox v-model="customRegion" style="flex-shrink: 0">
-                                            {{ t('settings.customRegion') }}
-                                        </el-checkbox>
-                                        <el-input
-                                            v-if="customRegion"
-                                            v-model="form.s3.S3_REGION"
-                                            placeholder="custom-region-id"
+                            <el-col :md="8" :sm="24">
+                                <el-form-item>
+                                    <template #label>
+                                        <div style="display: flex; gap: 12px; align-items: center">
+                                            <span>{{ t('settings.s3Region') }}</span>
+                                            <el-checkbox v-model="customRegion">
+                                                {{ t('settings.customRegion') }}
+                                            </el-checkbox>
+                                        </div>
+                                    </template>
+                                    <el-input
+                                        v-if="customRegion"
+                                        v-model="form.s3.S3_REGION"
+                                        placeholder="custom-region-id"
+                                    />
+                                    <el-select v-else v-model="form.s3.S3_REGION" style="width: 100%">
+                                        <el-option
+                                            v-for="r in standardRegions"
+                                            :key="r"
+                                            :label="r"
+                                            :value="r"
                                         />
-                                        <el-select v-else v-model="form.s3.S3_REGION" style="flex: 1">
-                                            <el-option
-                                                v-for="r in standardRegions"
-                                                :key="r"
-                                                :label="r"
-                                                :value="r"
-                                            />
-                                        </el-select>
-                                    </div>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :md="8" :sm="24">
+                                <el-form-item>
+                                    <template #label>
+                                        <div style="display: flex; gap: 12px; align-items: center">
+                                            <span>{{ t('settings.s3Endpoint') }}</span>
+                                            <el-checkbox v-model="customEndpoint">
+                                                {{ t('settings.customEndpoint') }}
+                                            </el-checkbox>
+                                            <el-tooltip
+                                                placement="top"
+                                                :content="t('settings.customEndpointDetails')"
+                                                raw-content
+                                            >
+                                                <el-icon style="color: #6b7280; cursor: help">
+                                                    <InfoFilled />
+                                                </el-icon>
+                                            </el-tooltip>
+                                        </div>
+                                    </template>
+                                    <el-input
+                                        v-model="form.s3.S3_ENDPOINT"
+                                        :disabled="!customEndpoint"
+                                        :placeholder="customEndpoint ? 'https://s3.example.com' : t('settings.endpointDefault')"
+                                    />
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -161,13 +190,14 @@ const saving = ref(false);
 const resettingStatus = ref(false);
 const migrating = ref(false);
 const customRegion = ref(false);
+const customEndpoint = ref(false);
 const showCacheDetails = ref(false);
 const uploadingUpdate = ref(false);
 const uploadRef = ref(null);
 
 const form = reactive({
     storage_type: 'local',
-    s3: { S3_KEY: '', S3_PASSWORD: '', S3_BUCKET: '', S3_REGION: '' },
+    s3: { S3_KEY: '', S3_PASSWORD: '', S3_BUCKET: '', S3_REGION: '', S3_ENDPOINT: '', S3_ENDPOINT_ENABLED: 'off' },
     cache_extension: false,
     write_log: false,
 });
@@ -182,6 +212,7 @@ async function fetchSettings() {
             form.cache_extension = data.data.cache_extension === 'on';
             form.write_log = data.data.write_log === 'on';
             customRegion.value = !!form.s3.S3_REGION && !standardRegions.includes(form.s3.S3_REGION);
+            customEndpoint.value = form.s3.S3_ENDPOINT_ENABLED === 'on';
         }
     } catch (err) {
         ElMessage.error(err?.response?.data?.message || t('common.error'));
@@ -201,6 +232,8 @@ async function save() {
             S3_PASSWORD: form.s3.S3_PASSWORD,
             S3_BUCKET: form.s3.S3_BUCKET,
             S3_REGION: form.s3.S3_REGION,
+            S3_ENDPOINT: form.s3.S3_ENDPOINT,
+            S3_ENDPOINT_ENABLED: customEndpoint.value,
         };
         const { data } = await http.post('/settings', payload);
         ElMessage.success(data?.message || t('settings.saved'));

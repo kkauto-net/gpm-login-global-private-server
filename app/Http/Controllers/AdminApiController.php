@@ -60,6 +60,8 @@ class AdminApiController extends Controller
                     'S3_PASSWORD' => $s3->S3_PASSWORD,
                     'S3_BUCKET' => $s3->S3_BUCKET,
                     'S3_REGION' => $s3->S3_REGION,
+                    'S3_ENDPOINT' => $s3->S3_ENDPOINT,
+                    'S3_ENDPOINT_ENABLED' => $s3->S3_ENDPOINT_ENABLED,
                 ],
                 'cache_extension' => $cacheExt,
                 'write_log' => $writeLog,
@@ -80,7 +82,9 @@ class AdminApiController extends Controller
             $request->input('S3_BUCKET'),
             $request->input('S3_REGION'),
             $request->boolean('cache_extension') ? 'on' : 'off',
-            $request->boolean('write_log') ? 'on' : 'off'
+            $request->boolean('write_log') ? 'on' : 'off',
+            $request->input('S3_ENDPOINT'),
+            $request->boolean('S3_ENDPOINT_ENABLED') ? 'on' : 'off'
         );
 
         return response()->json(['success' => true, 'message' => $message]);

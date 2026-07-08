@@ -127,7 +127,7 @@ class AdminService
      * @param string $cacheExtension
      * @return string
      */
-    public function saveSettings(string $type, ?string $s3Key = null, ?string $s3Password = null, ?string $s3Bucket = null, ?string $s3Region = null, string $cacheExtension = 'off', ?string $writeLog = null)
+    public function saveSettings(string $type, ?string $s3Key = null, ?string $s3Password = null, ?string $s3Bucket = null, ?string $s3Region = null, string $cacheExtension = 'off', ?string $writeLog = null, ?string $s3Endpoint = null, ?string $s3EndpointEnabled = null)
     {
         // Save storage type setting
         $this->settingService->setSetting('storage_type', $type);
@@ -145,6 +145,12 @@ class AdminService
                 'S3_BUCKET' => $s3Bucket ?? '',
                 'S3_REGION' => $s3Region ?? ''
             ];
+            // Only touch endpoint settings when the caller provides them, so legacy
+            // callers (e.g. AdminController@saveSetting) don't wipe an existing endpoint.
+            if ($s3Endpoint !== null || $s3EndpointEnabled !== null) {
+                $s3Data['S3_ENDPOINT'] = $s3Endpoint ?? '';
+                $s3Data['S3_ENDPOINT_ENABLED'] = $s3EndpointEnabled ?? 'off';
+            }
             $this->settingService->updateS3Settings($s3Data);
         }
 

@@ -73,6 +73,11 @@ export default {
         s3Bucket: 'S3 Bucket',
         s3Region: 'S3 Region',
         customRegion: 'Custom region',
+        s3Endpoint: 'S3 Endpoint',
+        customEndpoint: 'Custom endpoint',
+        endpointDefault: 'Using default AWS endpoint',
+        customEndpointDetails:
+            'Enable to send requests to a custom S3-compatible endpoint (e.g. MinIO, DigitalOcean Spaces, Wasabi). Leave off to use the default AWS endpoint. Existing configurations are unaffected.',
         cacheExtension: 'Enable cache extension',
         cacheExtensionDetails:
             'Applies to profiles created from Sep 26, 2024. Extensions are uploaded and stored on the private server (files prefixed with cache_) instead of in each profile — saving storage, reducing load time and improving profile start-up. The private server administrator is responsible for enabling or disabling this feature.',

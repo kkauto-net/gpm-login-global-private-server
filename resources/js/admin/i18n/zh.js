@@ -73,6 +73,11 @@ export default {
         s3Bucket: 'S3 Bucket',
         s3Region: 'S3 Region',
         customRegion: '自定义区域',
+        s3Endpoint: 'S3 端点',
+        customEndpoint: '自定义端点',
+        endpointDefault: '正在使用默认 AWS 端点',
+        customEndpointDetails:
+            '启用后可将请求发送到自定义的 S3 兼容端点（如 MinIO、DigitalOcean Spaces、Wasabi）。关闭则使用默认的 AWS 端点。现有配置不受影响。',
         cacheExtension: '启用扩展缓存',
         cacheExtensionDetails:
             '适用于 2024 年 9 月 26 日之后创建的配置文件。扩展将上传并存储到私有服务器（文件前缀 cache_），而不是保存在每个配置文件中——节省存储空间、缩短加载时间并提升启动速度。私有服务器管理员负责启用或关闭此功能。',

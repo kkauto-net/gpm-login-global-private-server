@@ -73,6 +73,11 @@ export default {
         s3Bucket: 'S3 Bucket',
         s3Region: 'S3 Region',
         customRegion: 'Tuỳ chỉnh region',
+        s3Endpoint: 'S3 Endpoint',
+        customEndpoint: 'Tuỳ chỉnh endpoint',
+        endpointDefault: 'Đang dùng endpoint mặc định của AWS',
+        customEndpointDetails:
+            'Bật để gửi yêu cầu tới một endpoint tương thích S3 tuỳ chỉnh (ví dụ MinIO, DigitalOcean Spaces, Wasabi). Tắt để dùng endpoint mặc định của AWS. Các cấu hình hiện có không bị ảnh hưởng.',
         cacheExtension: 'Bật cache extension',
         cacheExtensionDetails:
             'Áp dụng cho profile tạo từ 26/09/2024. Extension sẽ được upload và lưu trên private server (file có prefix cache_) thay vì lưu trong profile — giúp tiết kiệm dung lượng, giảm thời gian tải và tăng tốc mở profile. Quản trị viên private server chịu trách nhiệm bật/tắt tính năng này.',
