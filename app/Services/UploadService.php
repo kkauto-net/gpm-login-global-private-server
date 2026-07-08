@@ -272,14 +272,23 @@ class UploadService
         $s3Region = $this->settingService->getSetting('s3_region')->value ?? '';
         $s3RegionCode = $s3UploadService->getS3RegionCode($this->settingService->getSetting('s3_region')->value ?? '');
 
+        $endpointEnabled = ($this->settingService->getSetting('s3_endpoint_enabled')?->value ?? 'off') === 'on';
+        $customEndpoint = trim($this->settingService->getSetting('s3_endpoint')?->value ?? '');
+
         $isDO = $s3UploadService->getDORegion($s3Region) != null;
 
         config(['filesystems.disks.s3.key' => $s3Key]);
         config(['filesystems.disks.s3.secret' => $s3Secret]);
         config(['filesystems.disks.s3.bucket' => $s3Bucket]);
         config(['filesystems.disks.s3.region' => $s3RegionCode]);
-        if($isDO)
+
+        // Priority: explicit custom endpoint (e.g. Cloudflare R2) > DigitalOcean Spaces.
+        if ($endpointEnabled && $customEndpoint !== '') {
+            config(['filesystems.disks.s3.endpoint' => $customEndpoint]);
+            config(['filesystems.disks.s3.use_path_style_endpoint' => true]);
+        } elseif ($isDO) {
             config(['filesystems.disks.s3.endpoint' => $s3Region]);
+        }
         // config(['filesystems.disks.s3.url' => $s3Url]);
     }
 
